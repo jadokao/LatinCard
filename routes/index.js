@@ -1,27 +1,10 @@
-var express = require('express')
-var router = express.Router()
-var { graphqlHTTP } = require('express-graphql')
-var { buildSchema } = require('graphql')
+const express = require('express')
+const router = express.Router()
 
-var schema = buildSchema(`
-  type Query {
-    hello: String
-  }
-`)
-var root = { hello: () => 'Hello world!' }
+const userControllers = require('../controllers/userControllers.js')
+const cardControllers = require('../controllers/cardControllers.js')
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
-	res.render('index', { title: 'Express' })
-})
-
-router.get(
-	'/graphql',
-	graphqlHTTP({
-		schema: schema,
-		rootValue: root,
-		graphiql: true
-	})
-)
+router.get('/', (req, res) => res.render('index', { title: 'Test in routes.js' }))
 
 module.exports = router
