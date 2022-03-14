@@ -13,8 +13,8 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	Book.init(
 		{
-			UserId: DataTypes.STRING,
-			CardId: DataTypes.STRING
+			UserId: DataTypes.INTEGER,
+			CardId: DataTypes.INTEGER
 		},
 		{
 			sequelize,
