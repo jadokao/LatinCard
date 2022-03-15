@@ -1,19 +1,19 @@
 const btn = document.querySelector('#searchBtn')
 const input = document.querySelector('#searchInput')
 
-btn.addEventListener('click', function () {
-	const text = input.value
+// btn.addEventListener('click', function () {
+// 	const text = input.value
 
-	$.ajax({
-		url: 'https://latinwordnet.exeter.ac.uk/api/lemmas/virtus/n/',
-		jsonp: '$jsonp',
-		dataType: 'jsonp',
-		success: function (response, data) {
-			console.log(response) // server response
-			console.log(data)
-		}
-	})
-})
+// 	$.ajax({
+// 		url: 'https://latinwordnet.exeter.ac.uk/api/lemmas/virtus/n/',
+// 		jsonp: '$jsonp',
+// 		dataType: 'jsonp',
+// 		success: function (response, data) {
+// 			console.log(response) // server response
+// 			console.log(data)
+// 		}
+// 	})
+// })
 
 const getRoot = async word => {
 	const result = await fetch(`https://latinwordnet.exeter.ac.uk/lemmatize/${word}`, {
