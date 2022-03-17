@@ -28,15 +28,23 @@ const typeDefs = gql`
 		me: User
 		users: [User]
 		user(account: String): User
+
+		"""
+		find cards belong to user id
+		"""
 		cards(id: Int): User
+
 		card(id: Int, la: String,en: String,ch: String): [Card]
-		book(UserId: Int): [Card]
   }
 
 	type User {
 		id: Int!
 		name: String!
 		account: String!
+
+		"""
+		find cards belong to this user
+		"""
 		cards: [Card]
 	}
 
@@ -159,6 +167,7 @@ const resolvers = {
 				return findUserByAccount(account)
 			}
 		},
+		// find cards belong to specific user by user id
 		cards: (root, id, context) => {
 			const userId = id.id
 			return findUserByUserId(userId)
@@ -177,6 +186,7 @@ const resolvers = {
 		}
 	},
 	User: {
+		// take cards to specific user
 		cards: (parent, { id }, context) => {
 			return filterCardsByUserId(parent.id)
 		}
