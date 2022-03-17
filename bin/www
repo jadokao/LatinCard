@@ -135,69 +135,53 @@ const filterCardsByUserId = userId => {
 const findCardByChName = name => filterCardsByUserId.filter(card => card.ch === name)
 const findCardByEnName = name => filterCardsByUserId.filter(card => card.en === name)
 const findCardByLaName = name => filterCardsByUserId.filter(card => card.la === name)
+const findCardByCardId = id => filterCardsByUserId.filter(card => card.id === id)
 const findUserByUserId = userId => users.find(user => user.id === Number(userId))
 
 // 2. Resolvers 是一個會對照 Schema 中 field 的 function map ，讓你可以計算並回傳資料給 GraphQL Server
 const resolvers = {
 	Query: {
 		// 需注意名稱一定要對到 Schema 中 field 的名稱
-		hello: () => 'world',
-		me: () => users[0],
-		friends: () => users,
-		user: (root, args, context) => {
-			// 取出參數。因為 name 為 non-null 故一定會有值。
-			const { name } = args
-			return users.find(user => user.name === name)
-		}
+		hello: () => 'world'
 	},
 	// Mutation Type Resolver
 	Mutation: {
 		// 需注意！args 打開後第一層為 input ，再進去一層才是 title, content
-		addPost: (root, args, context) => {
-			const { input } = args
-			const { title, content } = input
-			const newPost = {
-				id: posts.length + 1,
-				authorId: meId,
-				title,
-				content,
-				likeGivers: []
-			}
-			posts.push(newPost)
-			return newPost
+		signUp: (parent, args, context) => {
+			const { name, account } = args
+			users.push({
+				id: users.length + 1,
+				name,
+				account
+			})
 		},
-		likePost: (root, args, context) => {
-			const { postId } = args
-			const post = findPostById(postId)
-			if (!post) throw new Error(`Post ${postId} Not Exists`)
-
-			if (post.likeGiverIds.includes(meId)) {
-				// 如果已經按過讚就收回
-				const index = post.likeGiverIds.findIndex(v => v === userId)
-				post.likeGiverIds.splice(index, 1)
-			} else {
-				// 否則就加入 likeGiverIds 名單
-				post.likeGiverIds.push(meId)
-			}
-			return post
-		}
-	},
-	User: {
-		// 1. User.parent field resolver, 回傳屬於該 user 的 posts
-		posts: (parent, args, context) => {
-			// parent.id 為 userId
-			return filterPostsByAuthorId(parent.id)
-		}
-	},
-	// 2. Post type resolver
-	Post: {
-		// 2-1. parent 為 post 的資料，透過 post.likeGiverIds 連接到 users
-		likeGivers: (parent, args, context) => {
-			return parent.likeGiverIds.map(id => findUserById(id))
+		postCard: (parent, args, context) => {
+			const { ch, en, la, partOfSpeech } = args
+			cards.push({
+				id: cards.length + 1,
+				ch,
+				en,
+				la,
+				partOfSpeech
+			})
+			return cards
 		},
-		// 2-2. parent 為 post 的資料，透過 post.author
-		author: (parent, args, context) => {
-			return findUserById(parent.authorId)
+		editCard: (parent, args, content) => {
+			const { id, ch, en, la, partOfSpeech } = args
+			const targetId = findCardByCardId(id)
+			const targetIndex = cards.findIndex(card => card.id === targetId)
+			cards[targetIndex] = {
+				ch,
+				en,
+				la,
+				partOfSpeech
+			}
+			return cards[targetIndex]
+		},
+		deleteCard: (parent, args, content) => {
+			const { id } = args
+			const targetId = findCardByCardId(id)
+			return cards.filter(card => card.id !== targetId)
 		}
 	}
 }
