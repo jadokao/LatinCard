@@ -24,34 +24,30 @@ app.set('port', port)
 // 1. GraphQL Schema 定義
 const typeDefs = gql`
   type Query {
-    "A simple type for getting started!"
-    hello: String
 		me: User
-		friends: [User]
-		user(name: String!): User
-		card: Card
-		book: Book
+		user(account: String!): User
+		card(la: String!): Card
+		card(en: String!): Card
+		card(ch: String!): Card
+		book(UserId: Int!, CardId: Int!): Book
   }
 
 	type User {
 		id: Int!
-		name: String
-		account: String
-		password: String
-		posts: Post		
+		name: String!
+		account: String!
+		password: String!
 	}
 
 	type Card {
 		id: Int!
 		ch: String!
 		chExplain: String
-		chPartOfSpeech: String
 		en: String!
 		enExplain: String
-		enPartOfSpeech: String
 		la: String!
 		laExplain: String
-		laPartOfSpeech: String
+		partOfSpeech: String
 	}
 
 	type Book {
@@ -59,29 +55,13 @@ const typeDefs = gql`
 		CardId: Int!
 	}
 
-	type Post {
-    "識別碼"
-    id: ID!
-    "作者"
-    author: User
-    "標題"
-    title: String
-    "內容"
-    content: String
-    "按讚者"
-    likeGivers: [User]
-  }
-
-	input AddPostInput {
-		title: String!
-		content: String
-	}
-
 	type Mutation {
-    "新增貼文"
-    addPost(input: AddPostInput): Post
-    "貼文按讚 (收回讚)"
-    likePost(postId: ID!): Post
+    "新增Card"
+    addCard(input: AddCardInput): Card
+    "編輯Card"
+    editCard(input: EditCardInput): Card
+		"刪除Card"
+		deleteCard(input: DeleteCardInput): Card
   }
 `
 
