@@ -79,11 +79,14 @@ const typeDefs = gql`
 	}
 
 	input EditCardInput{
-		id: Int
-		ch: String
-		en: String
-		la: String
-		partOfSpeech: String
+		chOrigin: String!
+		enOrigin: String!
+		laOrigin: String!
+		partOfSpeechOrigin: String!
+		ch: String!
+		en: String!
+		la: String!
+		partOfSpeech: String!
 	}
 
 	type Mutation {
@@ -252,16 +255,7 @@ const resolvers = {
 		},
 		editCard: (parent, { input }, { me }) => {
 			if (!me) throw new Error('Plz Log In First')
-			const { id, ch, en, la, partOfSpeech } = input
-			const targetIndex = cards.findIndex(card => card.id === id)
-			cards[targetIndex] = {
-				id,
-				ch,
-				en,
-				la,
-				partOfSpeech
-			}
-			return cards[targetIndex]
+			return cardController.editCard(input)
 		},
 		deleteCard: (parent, { id }, { me }) => {
 			if (!me) throw new Error('Plz Log In First')

@@ -11,6 +11,16 @@ const cardController = {
 		await Book.create({ CardId: result.id, UserId: id })
 		return result
 	},
+	editCard: async input => {
+		const { chOrigin, enOrigin, laOrigin, partOfSpeechOrigin, ch, en, la, partOfSpeech } = input
+
+		const card = await Card.findOne({
+			where: { ch: chOrigin, en: enOrigin, la: laOrigin, partOfSpeech: partOfSpeechOrigin }
+		})
+		if (!card) throw new Error('找不到卡片')
+		const newCard = await card.update({ ch, en, la, partOfSpeech })
+		return newCard.dataValues
+	},
 	deleteCard: async (id, me) => {
 		const isDeleted = await Card.destroy({ where: { id } })
 		if (isDeleted === 0) throw new Error('卡片編號錯誤')
