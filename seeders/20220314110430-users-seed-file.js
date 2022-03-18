@@ -7,13 +7,6 @@ module.exports = {
 			[
 				{
 					password: bcrypt.hashSync('12345678', bcrypt.genSaltSync(10), null),
-					account: 'root',
-					name: 'root',
-					createdAt: new Date(),
-					updatedAt: new Date()
-				},
-				{
-					password: bcrypt.hashSync('12345678', bcrypt.genSaltSync(10), null),
 					account: 'user1',
 					name: 'user1',
 					createdAt: new Date(),
@@ -23,6 +16,13 @@ module.exports = {
 					password: bcrypt.hashSync('12345678', bcrypt.genSaltSync(10), null),
 					account: 'user2',
 					name: 'user2',
+					createdAt: new Date(),
+					updatedAt: new Date()
+				},
+				{
+					password: bcrypt.hashSync('12345678', bcrypt.genSaltSync(10), null),
+					account: 'user3',
+					name: 'user3',
 					createdAt: new Date(),
 					updatedAt: new Date()
 				}

@@ -6,7 +6,6 @@ const cardController = {
 		if (!ch || !en || !la || !partOfSpeech) throw new Error('請完整填寫')
 
 		const result = await Card.create({ ch, en, la, partOfSpeech }).then(card => {
-			console.log(card.dataValues)
 			return card.dataValues
 		})
 		await Book.create({ CardId: result.id, UserId: id })

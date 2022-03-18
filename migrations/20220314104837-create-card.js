@@ -11,28 +11,13 @@ module.exports = {
 			ch: {
 				type: Sequelize.STRING
 			},
-			chExplain: {
-				type: Sequelize.STRING
-			},
-			chPartOfSpeech: {
-				type: Sequelize.STRING
-			},
 			en: {
-				type: Sequelize.STRING
-			},
-			enExplain: {
-				type: Sequelize.STRING
-			},
-			enPartOfSpeech: {
 				type: Sequelize.STRING
 			},
 			la: {
 				type: Sequelize.STRING
 			},
-			laExplain: {
-				type: Sequelize.STRING
-			},
-			laPartOfSpeech: {
+			partOfSpeech: {
 				type: Sequelize.STRING
 			},
 			createdAt: {

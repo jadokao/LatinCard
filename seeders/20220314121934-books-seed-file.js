@@ -16,6 +16,18 @@ module.exports = {
 					CardId: 2,
 					createdAt: new Date(),
 					updatedAt: new Date()
+				},
+				{
+					UserId: 3,
+					CardId: 3,
+					createdAt: new Date(),
+					updatedAt: new Date()
+				},
+				{
+					UserId: 1,
+					CardId: 3,
+					createdAt: new Date(),
+					updatedAt: new Date()
 				}
 			],
 			{}

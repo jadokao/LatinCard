@@ -18,14 +18,9 @@ module.exports = (sequelize, DataTypes) => {
 	Card.init(
 		{
 			ch: DataTypes.STRING,
-			chExplain: DataTypes.STRING,
-			chPartOfSpeech: DataTypes.STRING,
 			en: DataTypes.STRING,
-			enExplain: DataTypes.STRING,
-			enPartOfSpeech: DataTypes.STRING,
 			la: DataTypes.STRING,
-			laExplain: DataTypes.STRING,
-			laPartOfSpeech: DataTypes.STRING
+			partOfSpeech: DataTypes.STRING
 		},
 		{
 			sequelize,
