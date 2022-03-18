@@ -72,6 +72,10 @@ const typeDefs = gql`
 		card: Card
 	}
 
+	type Token {
+		token: String!
+	}
+
 	input PostCardInput{
 		ch: String!
 		en: String!
@@ -89,6 +93,7 @@ const typeDefs = gql`
 
 	type Mutation {
 		signUp(name: String, account: String, password: String): User
+		login (account: String!, password: String!): Token
     "新增Card"
     postCard(input: PostCardInput!): [Card]
     "編輯Card"
@@ -103,19 +108,19 @@ const users = [
 		id: 1,
 		name: 'Fong',
 		account: 'user1',
-		password: 12345678
+		password: '12345678'
 	},
 	{
 		id: 2,
 		name: 'Kevin',
 		account: 'user2',
-		password: 12345678
+		password: '12345678'
 	},
 	{
 		id: 3,
 		name: 'Mary',
 		account: 'user3',
-		password: 12345678
+		password: '12345678'
 	}
 ]
 const cards = [
@@ -182,6 +187,10 @@ const findIdByCardId = id => {
 	return card[0].id
 }
 const hash = text => bcrypt.hash(text, SALT_ROUNDS)
+const createToken = ({ id, account, name }) =>
+	jwt.sign({ id, account, name }, SECRET, {
+		expiresIn: '1d'
+	})
 
 // 2. Resolvers 是一個會對照 Schema 中 field 的 function map ，讓你可以計算並回傳資料給 GraphQL Server
 const resolvers = {
@@ -247,6 +256,16 @@ const resolvers = {
 				password: hashedPassword
 			})
 			return users[users.length - 1]
+		},
+		login: async (root, { account, password }, context) => {
+			// 1. 透過 account 找到相對應的 user
+			const user = users.find(user => user.account === account)
+			if (!user) throw new Error('Account Not Exists')
+			// 2. 將傳進來的 password 與資料庫存的 user.password 做比對
+			const passwordIsValid = (await bcrypt.compare(password, user.password)) || password === user.password
+			if (!passwordIsValid) throw new Error('Wrong Password')
+			// 3. 成功則回傳 token
+			return { token: await createToken(user) }
 		},
 		postCard: (parent, { input }, context) => {
 			const { ch, en, la, partOfSpeech } = input
