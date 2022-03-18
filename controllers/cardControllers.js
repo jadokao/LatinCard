@@ -10,6 +10,12 @@ const cardController = {
 		})
 		await Book.create({ CardId: result.id, UserId: id })
 		return result
+	},
+	deleteCard: async (id, me) => {
+		const isDeleted = await Card.destroy({ where: { id } })
+		if (isDeleted === 0) throw new Error('卡片編號錯誤')
+		await Book.destroy({ where: { UserId: me.id, CardId: id } })
+		return Card.findAll({ raw: true, nest: true })
 	}
 }
 

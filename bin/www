@@ -265,8 +265,7 @@ const resolvers = {
 		},
 		deleteCard: (parent, { id }, { me }) => {
 			if (!me) throw new Error('Plz Log In First')
-			const targetId = findIdByCardId(id)
-			return cards.filter(card => card.id !== targetId)
+			return cardController.deleteCard(id, me)
 		}
 	}
 }
