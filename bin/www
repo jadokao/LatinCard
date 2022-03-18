@@ -209,11 +209,13 @@ const resolvers = {
 			}
 		},
 		// find cards belong to specific user by user id
-		cards: (root, id, context) => {
+		cards: (root, id, { me }) => {
+			if (!me) throw new Error('Plz Log In First')
 			const userId = id.id
 			return findUserByUserId(userId)
 		},
-		card: (root, { id, ch, en, la }, context) => {
+		card: (root, { id, ch, en, la }, { me }) => {
+			if (!me) throw new Error('Plz Log In First')
 			if (ch) {
 				return findCardByChName(ch)
 			} else if (en) {
@@ -249,18 +251,7 @@ const resolvers = {
 	Mutation: {
 		// 需注意！args 打開後第一層為 input ，再進去一層才是 title, content
 		signUp: async (parent, { name, account, password }, context) => {
-			// 1. 檢查不能有重複註冊 account
-			const isUserAccountDuplicate = users.some(user => user.account === account)
-			if (isUserAccountDuplicate) throw new Error('User Account Duplicate')
-
-			const hashedPassword = await hash(password, SALT_ROUNDS)
-			users.push({
-				id: users.length + 1,
-				name,
-				account,
-				password: hashedPassword
-			})
-			return users[users.length - 1]
+			return userController.signUp(name, account, password)
 		},
 		login: async (root, { account, password }, context) => {
 			// 1. 透過 account 找到相對應的 user
@@ -272,7 +263,8 @@ const resolvers = {
 			// 3. 成功則回傳 token
 			return { token: await createToken(user) }
 		},
-		postCard: (parent, { input }, context) => {
+		postCard: (parent, { input }, { me }) => {
+			if (!me) throw new Error('Plz Log In First')
 			const { ch, en, la, partOfSpeech } = input
 			cards.push({
 				id: cards.length + 1,
@@ -284,7 +276,8 @@ const resolvers = {
 			console.log(cards)
 			return cards
 		},
-		editCard: (parent, { input }, content) => {
+		editCard: (parent, { input }, { me }) => {
+			if (!me) throw new Error('Plz Log In First')
 			const { id, ch, en, la, partOfSpeech } = input
 			const targetIndex = cards.findIndex(card => card.id === id)
 			cards[targetIndex] = {
@@ -296,7 +289,8 @@ const resolvers = {
 			}
 			return cards[targetIndex]
 		},
-		deleteCard: (parent, { id }, content) => {
+		deleteCard: (parent, { id }, { me }) => {
+			if (!me) throw new Error('Plz Log In First')
 			const targetId = findIdByCardId(id)
 			return cards.filter(card => card.id !== targetId)
 		}
