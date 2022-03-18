@@ -22,9 +22,13 @@ const cardController = {
 		return newCard.dataValues
 	},
 	deleteCard: async (id, me) => {
-		const isDeleted = await Card.destroy({ where: { id } })
-		if (isDeleted === 0) throw new Error('卡片編號錯誤')
-		await Book.destroy({ where: { UserId: me.id, CardId: id } })
+		const checkCard = await Card.findOne({ raw: true, nest: true, where: { id } })
+		if (!checkCard) throw new Error('卡片編號錯誤')
+
+		const isDeletedBook = await Book.destroy({ where: { UserId: me.id, CardId: id } })
+		if (isDeletedBook === 0) throw new Error('不屬於該使用者的卡片')
+		await Card.destroy({ where: { id } })
+
 		return Card.findAll({ raw: true, nest: true })
 	}
 }
