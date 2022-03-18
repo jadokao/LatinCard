@@ -9,6 +9,7 @@ var app = require('../app')
 // var http = require('http')
 const { ApolloServer, gql } = require('apollo-server')
 const { post, param } = require('jquery')
+const { graphql, GraphQLObjectType } = require('graphql')
 
 /**
  * Get port from environment and store in Express.
@@ -41,6 +42,7 @@ const typeDefs = gql`
 		id: Int!
 		name: String!
 		account: String!
+		password: String!
 
 		"""
 		find cards belong to this user
@@ -64,14 +66,29 @@ const typeDefs = gql`
 		CardId: Int!
 	}
 
+	input postCardInput{
+		ch: String
+		en: String
+		la: String
+		partOfSpeech: String
+	}
+
+	input editCardInput{
+		id: Int
+		ch: String
+		en: String
+		la: String
+		partOfSpeech: String
+	}
+
 	type Mutation {
-		signUp(name: String, account: String):User
+		signUp(name: String, account: String, password: String):User
     "新增Card"
-    postCard(ch: String, en: String, la: String, partOfSpeech: String): Card
+    postCard(input: postCardInput!): Card
     "編輯Card"
-    editCard(id: Int, ch: String, en: String,la: String, partOfSpeech: String): Card
+    editCard(input: editCardInput!): Card
 		"刪除Card"
-		deleteCard(id: Int): Card
+		deleteCard(id: Int!): Card
   }
 `
 
@@ -195,12 +212,14 @@ const resolvers = {
 	Mutation: {
 		// 需注意！args 打開後第一層為 input ，再進去一層才是 title, content
 		signUp: (parent, args, context) => {
-			const { name, account } = args
+			const { name, account, password } = args
 			users.push({
 				id: users.length + 1,
 				name,
-				account
+				account,
+				password
 			})
+			return users[users.length - 1]
 		},
 		postCard: (parent, args, context) => {
 			const { ch, en, la, partOfSpeech } = args
