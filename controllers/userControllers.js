@@ -3,11 +3,11 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 const userController = {
-	findUser: async account => {
+	findUser: async id => {
 		const result = await User.findOne({
 			raw: true,
 			nest: true,
-			where: { account: account },
+			where: { id },
 			attributes: { exclude: ['createdAt', 'updatedAt'] }
 		}).then(user => {
 			return user
