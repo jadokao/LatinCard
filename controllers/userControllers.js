@@ -32,6 +32,22 @@ const userController = {
 			throw new Error('已經重複註冊')
 		})
 		return result.dataValues
+	},
+	signIn: async (account, password) => {
+		if (!account || !password) throw new Error('請完整填寫')
+		// 1. 透過 account 找到相對應的 user
+		const user = await User.findOne({ where: { account: account } })
+		if (!user) throw new Error('帳號尚未註冊')
+
+		// 2. 將傳進來的 password 與資料庫存的 user.password 做比對
+		const passwordIsValid = await bcrypt.compare(password, user.password)
+		if (!passwordIsValid) throw new Error('密碼輸入錯誤')
+
+		// 3. 成功則簽發 回傳 token
+		const payload = { id: user.id }
+		const token = await jwt.sign(payload, process.env.JWT_SECRET)
+
+		return { token }
 	}
 }
 

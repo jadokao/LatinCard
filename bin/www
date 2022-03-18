@@ -4,16 +4,14 @@
  * Module dependencies.
  */
 
+if (process.env.NODE_ENV !== 'production') {
+	require('dotenv').config()
+}
+
 var app = require('../app')
 // var debug = require('debug')('latincard:server')
 // var http = require('http')
 const { ApolloServer, gql } = require('apollo-server')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-// 定義 bcrypt 加密所需 saltRounds 次數
-const SALT_ROUNDS = 2
-// 定義 jwt 所需 secret (可隨便打)
-const SECRET = 'just_a_random_secret'
 
 /**
  * Get port from environment and store in Express.
@@ -187,12 +185,6 @@ const findIdByCardId = id => {
 	const card = cards.filter(card => card.id === id)
 	return card[0].id
 }
-const hash = text => bcrypt.hash(text, SALT_ROUNDS)
-const createToken = ({ id, account, name }) =>
-	jwt.sign({ id, account, name }, SECRET, {
-		// 在 token 建造時加上 expiredIn: '1d' 的參數表示 token 在一天後過期
-		expiresIn: '1d'
-	})
 
 // 2. Resolvers 是一個會對照 Schema 中 field 的 function map ，讓你可以計算並回傳資料給 GraphQL Server
 const resolvers = {
@@ -254,14 +246,7 @@ const resolvers = {
 			return userController.signUp(name, account, password)
 		},
 		login: async (root, { account, password }, context) => {
-			// 1. 透過 account 找到相對應的 user
-			const user = users.find(user => user.account === account)
-			if (!user) throw new Error('Account Not Exists')
-			// 2. 將傳進來的 password 與資料庫存的 user.password 做比對
-			const passwordIsValid = (await bcrypt.compare(password, user.password)) || password === user.password
-			if (!passwordIsValid) throw new Error('Wrong Password')
-			// 3. 成功則回傳 token
-			return { token: await createToken(user) }
+			return userController.signIn(account, password)
 		},
 		postCard: (parent, { input }, { me }) => {
 			if (!me) throw new Error('Plz Log In First')
@@ -304,12 +289,12 @@ const server = new ApolloServer({
 	// Resolver 部分
 	resolvers,
 	context: async ({ req }) => {
-		// 1. 將 token 從 request header 的 x-token 取出
-		const token = req.headers['x-token']
+		// 1. 將 token 從 request header 的 jwt-token 取出
+		const token = req.headers['jwt-token']
 		if (token) {
 			try {
 				// 2. 檢查 token + 取得解析出的資料
-				const me = await jwt.verify(token, SECRET)
+				const me = await jwt.verify(token, process.env.JWT_SECRET)
 				// 3. 放進 context
 				return { me }
 			} catch (e) {
