@@ -1,6 +1,47 @@
 const { User, Card, Book } = require('../models')
 
 const cardController = {
+	findOneCard: async (input, me) => {
+		const { id, ch, en, la } = input
+		if (id) {
+			return Card.findOne({
+				raw: true,
+				nest: true,
+				where: { id }
+			})
+		}
+		let result = {}
+		if (ch) {
+			const cards = await Card.findAll({
+				raw: true,
+				nest: true,
+				where: { ch },
+				include: [{ model: User, as: 'CardBelongUsers' }]
+			})
+			result = cards.filter(card => card.CardBelongUsers.id === me.id)
+		} else if (en) {
+			const cards = await Card.findAll({
+				raw: true,
+				nest: true,
+				where: { en },
+				include: [{ model: User, as: 'CardBelongUsers' }]
+			})
+			result = cards.filter(card => card.CardBelongUsers.id === me.id)
+		} else if (la) {
+			const cards = await Card.findAll({
+				raw: true,
+				nest: true,
+				where: { la },
+				include: [{ model: User, as: 'CardBelongUsers' }]
+			})
+			result = cards.filter(card => card.CardBelongUsers.id === me.id)
+		}
+		return result[0]
+	},
+	findCards: async me => {
+		const cards = await Card.findAll({ raw: true, nest: true, include: [{ model: User, as: 'CardBelongUsers' }] })
+		return cards.filter(card => card.CardBelongUsers.id === me.id)
+	},
 	postCard: async (input, id) => {
 		const { ch, en, la, partOfSpeech } = input
 		if (!ch || !en || !la || !partOfSpeech) throw new Error('請完整填寫')

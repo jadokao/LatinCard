@@ -7,8 +7,7 @@ var path = require('path')
 var cookieParser = require('cookie-parser')
 var logger = require('morgan')
 const cors = require('cors')
-
-var indexRouter = require('./routes/index')
+const passport = require('./config/passport')
 
 var app = express()
 
@@ -24,7 +23,9 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(cors())
-app.use('/', indexRouter)
+
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.use((req, res, next) => {
 	res.locals.success_messages = req.flash('success_messages')

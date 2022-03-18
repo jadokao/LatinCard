@@ -32,10 +32,10 @@ const typeDefs = gql`
 		"""
 		find cards belong to user id
 		"""
-		cards(id: Int): User
+		cards: [Card]
 		books(queryCard: Int): Book
 
-		card(id: Int, la: String,en: String,ch: String): [Card]
+		card(id: Int, la: String, en: String, ch: String): Card
   }
 
 	type User {
@@ -203,21 +203,11 @@ const resolvers = {
 			}
 		},
 		// find cards belong to specific user by user id
-		cards: isAuthenticated((root, id, { me }) => {
-			const userId = id.id
-			return findUserByUserId(userId)
+		cards: isAuthenticated((root, args, { me }) => {
+			return cardController.findCards(me)
 		}),
-		card: isAuthenticated((root, { id, ch, en, la }, { me }) => {
-			if (ch) {
-				return findCardByChName(ch)
-			} else if (en) {
-				return findCardByEnName(en)
-			} else if (la) {
-				return findCardByLaName(la)
-			} else if (id) {
-				return filterCardsByUserId(id)
-			}
-			return null
+		card: isAuthenticated((root, input, { me }) => {
+			return cardController.findOneCard(input, me)
 		}),
 		// This is parent for Book.card
 		books: (root, { queryCard }, context) => {
