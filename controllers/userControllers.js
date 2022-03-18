@@ -1,7 +1,17 @@
-const db = require('../models')
-const User = db.User
-const Card = db.Card
+const { User, Card } = require('../models')
 
-const userController = {}
+const userController = {
+	findUser: async account => {
+		const result = await User.findOne({
+			raw: true,
+			nest: true,
+			where: { account: account.account },
+			attributes: { exclude: ['createdAt', 'updatedAt'] }
+		}).then(user => {
+			return user
+		})
+		return result
+	}
+}
 
 module.exports = userController
