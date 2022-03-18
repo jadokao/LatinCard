@@ -5,7 +5,7 @@ const userController = {
 		const result = await User.findOne({
 			raw: true,
 			nest: true,
-			where: { account: account.account },
+			where: { account: account },
 			attributes: { exclude: ['createdAt', 'updatedAt'] }
 		}).then(user => {
 			return user

@@ -108,7 +108,7 @@ const users = [
 		id: 1,
 		name: 'Fong',
 		account: 'user1',
-		password: '12345678'
+		password: '$2a$10$O2xadlxQWr5U.8PIz6wsgu.I1isDKRnNVXYGE5/EXos6nA1tXcahW'
 	},
 	{
 		id: 2,
@@ -198,8 +198,9 @@ const createToken = ({ id, account, name }) =>
 const resolvers = {
 	Query: {
 		// 需注意名稱一定要對到 Schema 中 field 的名稱
-		me: (root, account, context) => {
-			return userController.findUser(account)
+		me: (root, account, { me }) => {
+			if (!me) throw new Error('Plz Log In First')
+			return userController.findUser(me.account)
 		},
 		users: () => users,
 		user: (root, account, context) => {
@@ -307,7 +308,23 @@ const server = new ApolloServer({
 	// Schema 部分
 	typeDefs,
 	// Resolver 部分
-	resolvers
+	resolvers,
+	context: async ({ req }) => {
+		// 1. 將 token 從 request header 的 x-token 取出
+		const token = req.headers['x-token']
+		if (token) {
+			try {
+				// 2. 檢查 token + 取得解析出的資料
+				const me = await jwt.verify(token, SECRET)
+				// 3. 放進 context
+				return { me }
+			} catch (e) {
+				throw new Error('Your session expired. Sign in again.')
+			}
+		}
+		// 如果沒有 token 就回傳空的 context 出去
+		return {}
+	}
 })
 
 /**
