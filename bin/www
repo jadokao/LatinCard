@@ -4,14 +4,11 @@
  * Module dependencies.
  */
 
-if (process.env.NODE_ENV !== 'production') {
-	require('dotenv').config()
-}
-
 var app = require('../app')
 // var debug = require('debug')('latincard:server')
 // var http = require('http')
 const { ApolloServer, gql } = require('apollo-server')
+const jwt = require('jsonwebtoken')
 
 /**
  * Get port from environment and store in Express.
@@ -93,7 +90,7 @@ const typeDefs = gql`
 		signUp(name: String, account: String, password: String): User
 		login (account: String!, password: String!): Token
     "新增Card"
-    postCard(input: PostCardInput!): [Card]
+    postCard(input: PostCardInput!): Card
     "編輯Card"
     editCard(input: EditCardInput!): Card
 		"刪除Card"
@@ -168,6 +165,7 @@ const books = [
 ]
 
 const userController = require('../controllers/userControllers')
+const cardController = require('../controllers/cardControllers')
 
 // helper functions
 const filterCardsByUserId = userId => {
@@ -250,16 +248,7 @@ const resolvers = {
 		},
 		postCard: (parent, { input }, { me }) => {
 			if (!me) throw new Error('Plz Log In First')
-			const { ch, en, la, partOfSpeech } = input
-			cards.push({
-				id: cards.length + 1,
-				ch: ch,
-				en: en,
-				la: la,
-				partOfSpeech: partOfSpeech
-			})
-			console.log(cards)
-			return cards
+			return cardController.postCard(input, me.id)
 		},
 		editCard: (parent, { input }, { me }) => {
 			if (!me) throw new Error('Plz Log In First')
