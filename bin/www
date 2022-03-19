@@ -39,7 +39,7 @@ const server = new ApolloServer({
 				// 2. 檢查 token + 取得解析出的資料
 				const me = await jwt.verify(token, process.env.JWT_SECRET)
 				// 3. 放進 context
-				return { me }
+				return { me, secret: process.env.JWT_SECRET }
 			} catch (e) {
 				throw new Error('Your session expired. Sign in again.')
 			}
