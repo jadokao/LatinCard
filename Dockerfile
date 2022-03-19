@@ -6,9 +6,9 @@ COPY ./ ./
 # RUN開頭的指令會在建立中執行，比如安裝一個套件，在這裏使用 apt-get 來安裝了一些套件
 # Install the Project Dependencies like Express Framework
 RUN npm install
-RUN apt-get install vim
+RUN apk update && apk add vim && apk add bash
 # expose httpd port
-EXPOSE 8080
+EXPOSE 4000
 # the command to run
 # Default Command to launch the Application
 CMD ["npm", "start"]
