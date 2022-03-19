@@ -33,7 +33,7 @@ const typeDefs = gql`
 		find cards belong to user id
 		"""
 		cards: [Card]
-		books(queryCard: Int): Book
+		books(queryCard: Int): [Book]
 
 		card(id: Int, la: String, en: String, ch: String): Card
   }
@@ -210,10 +210,8 @@ const resolvers = {
 			return cardController.findOneCard(input, me)
 		}),
 		// This is parent for Book.card
-		books: (root, { queryCard }, context) => {
-			const userId = queryCard
-			const matched = books.filter(pair => queryCard === pair.CardId)
-			return matched[0]
+		books: (root, args, context) => {
+			return cardController.findCardFromBook()
 		}
 	},
 	User: {
@@ -223,10 +221,9 @@ const resolvers = {
 		}
 	},
 	Book: {
-		// take cards to specific user
+		// take cards from specific book data
 		card: (parent, args, context) => {
-			const matched = cards.filter(pair => parent.CardId === pair.id)
-			return matched[0]
+			return cardController.findOneCard(parent, context)
 		}
 	},
 	// Mutation Type Resolver

@@ -2,7 +2,10 @@ const { User, Card, Book } = require('../models')
 
 const cardController = {
 	findOneCard: async (input, me) => {
-		const { id, ch, en, la } = input
+		const { id, ch, en, la, CardId } = input
+
+		if (CardId) return Card.findOne({ where: { id: CardId } })
+
 		if (id) {
 			return Card.findOne({
 				raw: true,
@@ -41,6 +44,9 @@ const cardController = {
 	findCards: async me => {
 		const cards = await Card.findAll({ raw: true, nest: true, include: [{ model: User, as: 'CardBelongUsers' }] })
 		return cards.filter(card => card.CardBelongUsers.id === me.id)
+	},
+	findCardFromBook: async id => {
+		return Book.findAll({ raw: true, nest: true })
 	},
 	postCard: async (input, id) => {
 		const { ch, en, la, partOfSpeech } = input
