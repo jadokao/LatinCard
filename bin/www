@@ -26,16 +26,13 @@ app.set('port', port)
 const typeDefs = gql`
   type Query {
 		me(account: String): User
-		users: [User]
-		user(account: String): User
+		books: [Book]
+		card(id: Int, la: String, en: String, ch: String): Card
 
 		"""
 		find cards belong to user id
 		"""
-		cards: [Card]
-		books(queryCard: Int): [Book]
-
-		card(id: Int, la: String, en: String, ch: String): Card
+		cards: [Card]		
   }
 
 	type User {
@@ -43,11 +40,6 @@ const typeDefs = gql`
 		name: String!
 		account: String!
 		password: String!
-
-		"""
-		find cards belong to this user
-		"""
-		cards: [Card]
 	}
 
 	type Card {
@@ -101,91 +93,10 @@ const typeDefs = gql`
   }
 `
 
-const users = [
-	{
-		id: 1,
-		name: 'Fong',
-		account: 'user1',
-		password: '$2a$10$O2xadlxQWr5U.8PIz6wsgu.I1isDKRnNVXYGE5/EXos6nA1tXcahW'
-	},
-	{
-		id: 2,
-		name: 'Kevin',
-		account: 'user2',
-		password: '12345678'
-	},
-	{
-		id: 3,
-		name: 'Mary',
-		account: 'user3',
-		password: '12345678'
-	}
-]
-const cards = [
-	{
-		id: 1,
-		ch: '愛',
-		en: 'love',
-		la: 'amo',
-		partOfSpeech: '動詞'
-	},
-	{
-		id: 2,
-		ch: '女孩',
-		en: 'girl',
-		la: 'puella',
-		partOfSpeech: '名詞'
-	},
-	{
-		id: 3,
-		ch: '是',
-		en: 'to be',
-		la: 'est',
-		partOfSpeech: '動詞'
-	}
-]
-const books = [
-	{
-		id: 1,
-		UserId: 1,
-		CardId: 1
-	},
-	{
-		id: 2,
-		UserId: 2,
-		CardId: 2
-	},
-	{
-		id: 3,
-		UserId: 3,
-		CardId: 3
-	},
-	{
-		id: 4,
-		UserId: 1,
-		CardId: 3
-	}
-]
-
 const userController = require('../controllers/userControllers')
 const cardController = require('../controllers/cardControllers')
 
 // helper functions
-const filterCardsByUserId = userId => {
-	const matched = books.filter(pair => userId === pair.UserId)
-	const result = []
-	matched.forEach(item => result.push(...cards.filter(card => card.id === item.CardId)))
-	return result
-}
-const findUserByAccount = account => users.find(user => user.account === account)
-const findCardByChName = name => filterCardsByUserId(meId).filter(card => card.ch === name)
-const findCardByEnName = name => filterCardsByUserId(meId).filter(card => card.en === name)
-const findCardByLaName = name => filterCardsByUserId(meId).filter(card => card.la === name)
-const findUserByUserId = userId => users.find(user => user.id === Number(userId))
-const findIdByCardId = id => {
-	const card = cards.filter(card => card.id === id)
-	return card[0].id
-}
 const isAuthenticated = resolverFunc => (parent, args, context) => {
 	if (!context.me) throw new ForbiddenError('請先登入')
 	return resolverFunc.apply(null, [parent, args, context])
@@ -196,12 +107,6 @@ const resolvers = {
 	Query: {
 		// 需注意名稱一定要對到 Schema 中 field 的名稱
 		me: isAuthenticated((parent, args, { me }) => userController.findUser(me.id)),
-		users: () => users,
-		user: (root, account, context) => {
-			if (account) {
-				return findUserByAccount(account)
-			}
-		},
 		// find cards belong to specific user by user id
 		cards: isAuthenticated((root, args, { me }) => {
 			return cardController.findCards(me)
@@ -212,12 +117,6 @@ const resolvers = {
 		// This is parent for Book.card
 		books: (root, args, context) => {
 			return cardController.findCardFromBook()
-		}
-	},
-	User: {
-		// take cards to specific user
-		cards: (parent, args, context) => {
-			return filterCardsByUserId(parent.id)
 		}
 	},
 	Book: {
