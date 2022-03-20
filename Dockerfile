@@ -7,8 +7,7 @@ ENV GENERATE_SOURCEMAP false
 # RUN開頭的指令會在建立中執行，比如安裝一個套件，在這裏使用 apt-get 來安裝了一些套件
 # Install the Project Dependencies like Express Framework
 RUN npm install
-RUN apk update && apk add vim && apk add bash
-RUN NODE_OPTIONS="--max-old-space-size=8192"
+RUN apk update && apk add vim && apk add bash 
 # expose httpd port
 EXPOSE 4000
 # the command to run
