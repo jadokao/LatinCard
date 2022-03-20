@@ -40,6 +40,9 @@ const userController = {
 		const user = await User.findOne({ where: { account: account } })
 		if (!user) throw new Error('帳號尚未註冊')
 
+		const tokenRedis = await redisClient.get(`jwt-token-${user.id}`)
+		if (tokenRedis) return { token: tokenRedis }
+
 		// 2. 將傳進來的 password 與資料庫存的 user.password 做比對
 		const passwordIsValid = await bcrypt.compare(password, user.password)
 		if (!passwordIsValid) throw new Error('密碼輸入錯誤')
