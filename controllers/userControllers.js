@@ -1,6 +1,7 @@
 const { User } = require('../models')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const redisClient = require('../redis')
 
 const userController = {
 	findUser: async id => {
@@ -45,7 +46,9 @@ const userController = {
 
 		// 3. 成功則簽發 回傳 token
 		const payload = { id: user.id }
-		const token = await jwt.sign(payload, process.env.JWT_SECRET)
+		const token = await jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' })
+
+		await redisClient.set(`jwt-token-${user.id}`, token, { EX: 600 })
 
 		return { token }
 	}
