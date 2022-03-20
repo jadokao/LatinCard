@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  mysql: # 自訂的service
+    image: mysql:8
+    container_name: mysql
+    volumes:
+      - mysql-docker-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_DATABASE: "latin_card"
+    ports:
+      - "3307:3306"  
+  node-app:
+    depends_on:
+      - mysql
+    build: .
+    image: jadokao/sideproject
+    ports:
+      - "4001:4000"
+    volumes:
+      - ./:/app
+    environment:
+      - JWT_SECRET=FAKE
+  redis:
+    image: "redis:alpine"
+volumes:
+  mysql-docker-data:

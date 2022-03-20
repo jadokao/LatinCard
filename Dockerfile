@@ -11,4 +11,4 @@ RUN apk update && apk add vim && apk add bash
 EXPOSE 4000
 # the command to run
 # Default Command to launch the Application
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]
