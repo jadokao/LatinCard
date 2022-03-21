@@ -22,15 +22,21 @@ app.use(cookieParser())
 // default path: /public...
 app.use(express.static(path.join(__dirname, 'public')))
 
+app.enable('trust proxy')
 app.use(cors())
 
 app.use(passport.initialize())
 app.use(passport.session())
 
 app.use((req, res, next) => {
-	res.locals.success_messages = req.flash('success_messages')
-	res.locals.error_messages = req.flash('error_messages')
-	res.locals.user = req.user
+	res.header('Access-Control-Allow-Origin', '*')
+	res.header('Access-Control-Allow-Credentials', true)
+	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+	res.header(
+		'Access-Control-Allow-Headers',
+		'Origin,X-Requested-With,Content-Type,Accept,content-type,application/json'
+	)
+	next()
 	next()
 })
 
