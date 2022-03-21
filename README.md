@@ -12,7 +12,6 @@
 4. 創建卡片
 5. 編輯卡片
 6. 刪除卡片
-
 ---
 ## 不知道要怎麼用Graphql的API嗎？
 請看這邊：[Grahql API 使用指南](https://github.com/jadokao/LatinCard/blob/master/GraphqlGuide.md) 
@@ -29,8 +28,7 @@
 2. ch - 中文單字
 3. en - 英文單字
 4. la - 拉丁文單字
-5. partOfSpeech - 單字的詞性
-   
+5. partOfSpeech - 單字的詞性   
 ---
 ## 使用技術
 1. Node.js：讓JavaScript在伺服器端運行的執行環境
@@ -39,7 +37,6 @@
 4. Redis：記憶體內鍵值資料存放區
 5. Docker：以應用程式為中心的虛擬化容器
 6. Nginx：非同步框架的 web server
-
 ---
 ## 使用方法
 1. 下載repository
@@ -101,3 +98,4 @@ password：12345678
 ```
 ## 相關連結
 Docker hub：https://hub.docker.com/repository/docker/jadokao/sideproject
+Heroku: https://ming-latin-card.herokuapp.com/
