@@ -33,10 +33,7 @@ const typeDefs = gql`
 	}
 
 	input EditCardInput{
-		chOrigin: String!
-		enOrigin: String!
-		laOrigin: String!
-		partOfSpeechOrigin: String!
+		id: Int!
 		ch: String!
 		en: String!
 		la: String!

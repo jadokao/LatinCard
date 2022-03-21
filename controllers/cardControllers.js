@@ -59,10 +59,10 @@ const cardController = {
 		return result
 	},
 	editCard: async input => {
-		const { chOrigin, enOrigin, laOrigin, partOfSpeechOrigin, ch, en, la, partOfSpeech } = input
+		const { id, ch, en, la, partOfSpeech } = input
 
 		const card = await Card.findOne({
-			where: { ch: chOrigin, en: enOrigin, la: laOrigin, partOfSpeech: partOfSpeechOrigin }
+			where: { id: id }
 		})
 		if (!card) throw new Error('找不到卡片')
 		const newCard = await card.update({ ch, en, la, partOfSpeech })
