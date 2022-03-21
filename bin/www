@@ -46,7 +46,9 @@ const server = new ApolloServer({
 		}
 		// 如果沒有 token 就回傳空的 context 出去
 		return {}
-	}
+	},
+	introspection: true,
+	playground: true
 })
 
 /**
