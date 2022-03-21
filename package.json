@@ -38,6 +38,7 @@
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "pg": "^8.7.3",
     "pm2": "^5.2.0",
     "redis": "^4.0.4",
     "sequelize": "^6.17.0",
