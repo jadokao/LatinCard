@@ -1,6 +1,12 @@
 version: "3.8"
 
 services:
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "3000:80" # 4000 for node-app, 80 for nginx
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
   mysql: # 自訂的service
     image: mysql:8
     container_name: mysql
@@ -9,8 +15,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: "password"
       MYSQL_DATABASE: "latin_card"
-      REDIS_URL: "redis://redis:6379"
-      REDIS_HOST: "redis-server"
     ports:
       - "3307:3306"  
   node-app:
@@ -18,13 +22,13 @@ services:
       - mysql
     build: .
     image: jadokao/sideproject
-    ports:
-      - "4001:4000"
     volumes:
       - ./:/app
     environment:
       - JWT_SECRET=FAKE
       - NODE_OPTIONS=--max-old-space-size=8192
+      - REDIS_URL=redis://redis:6379
+      - REDIS_HOST=redis-server
   redis:
     image: "redis:alpine"
 volumes:

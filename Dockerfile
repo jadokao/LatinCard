@@ -9,7 +9,8 @@ ENV GENERATE_SOURCEMAP false
 RUN npm install
 RUN apk update && apk add vim && apk add bash 
 # expose httpd port
-EXPOSE 4000
+ENV PORT 4000
+EXPOSE $PORT
 # the command to run
 # Default Command to launch the Application
 CMD ["npm", "run", "dev"]
