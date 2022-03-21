@@ -16,7 +16,7 @@ const jwt = require('jsonwebtoken')
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000')
+var port = normalizePort(process.env.PORT || 4000)
 app.set('port', port)
 
 /**
@@ -54,7 +54,7 @@ const server = new ApolloServer({
  */
 
 // 4. 啟動 Server
-server.listen().then(({ url }) => {
+server.listen({ port: process.env.PORT || 4000 }).then(({ url }) => {
 	console.log(`? Server ready at ${url}`)
 })
 
