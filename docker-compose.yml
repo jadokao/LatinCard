@@ -9,6 +9,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: "password"
       MYSQL_DATABASE: "latin_card"
+      REDIS_URL: "redis://redis:6379"
+      REDIS_HOST: "redis-server"
     ports:
       - "3307:3306"  
   node-app:
