@@ -6,6 +6,7 @@ module.exports = {
 			'Cards',
 			[
 				{
+					id: 1,
 					ch: '我愛',
 					en: 'love',
 					la: 'amo',
@@ -14,6 +15,7 @@ module.exports = {
 					updatedAt: new Date()
 				},
 				{
+					id: 2,
 					ch: '女孩',
 					en: 'girl',
 					la: 'puella',
@@ -22,6 +24,7 @@ module.exports = {
 					updatedAt: new Date()
 				},
 				{
+					id: 3,
 					ch: '是',
 					en: 'to be',
 					la: 'est',
