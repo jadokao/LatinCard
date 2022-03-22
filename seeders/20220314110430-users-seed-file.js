@@ -6,6 +6,7 @@ module.exports = {
 			'Users',
 			[
 				{
+					id: 1,
 					password: bcrypt.hashSync('12345678', bcrypt.genSaltSync(10), null),
 					account: 'user1',
 					name: 'user1',
@@ -13,6 +14,7 @@ module.exports = {
 					updatedAt: new Date()
 				},
 				{
+					id: 2,
 					password: bcrypt.hashSync('12345678', bcrypt.genSaltSync(10), null),
 					account: 'user2',
 					name: 'user2',
@@ -20,6 +22,7 @@ module.exports = {
 					updatedAt: new Date()
 				},
 				{
+					id: 3,
 					password: bcrypt.hashSync('12345678', bcrypt.genSaltSync(10), null),
 					account: 'user3',
 					name: 'user3',
