@@ -4,7 +4,7 @@ services:
   nginx:
     image: nginx:stable-alpine
     ports:
-      - "3000:80" # 4000 for node-app, 80 for nginx
+      - "4000:80" # 4000 for node-app, 80 for nginx
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
   mysql: # 自訂的service
